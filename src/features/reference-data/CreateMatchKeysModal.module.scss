@@ -1,0 +1,25 @@
+.container {
+    width: 500px;
+    height: 300px;
+    padding: 16px;
+}
+
+.title {
+    height: 50px;
+    padding: 12px;
+}
+
+.matchKeyField {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-block: 10px;
+}
+
+.selectedMatchKeys {
+    margin-block: 10px;
+    align-items: center;
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
