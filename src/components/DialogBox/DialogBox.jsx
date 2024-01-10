@@ -20,6 +20,10 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
     "& .MuiDialogTitle-root": {
         padding: "unset",
     },
+    "& .MuiPaper-elevation": {
+        maxHeight: "unset",
+        maxWidth: "unset",
+    },
 }));
 
 export default function DialogBox({
@@ -28,6 +32,7 @@ export default function DialogBox({
     renderContent,
     renderFooter,
 }) {
+    console.log("Render Dialog");
     const [open, setOpen] = useState(true);
     const handleClose = () => {
         setOpen(false);

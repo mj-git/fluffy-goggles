@@ -1,11 +1,11 @@
-import { red } from "@mui/material/colors";
+import { orange, red } from "@mui/material/colors";
 import { createTheme } from "@mui/material/styles";
 
 // A custom theme for this app
 const theme = createTheme({
     palette: {
         primary: {
-            main: "#556cd6",
+            main: orange[800],
         },
         secondary: {
             main: "#19857b",

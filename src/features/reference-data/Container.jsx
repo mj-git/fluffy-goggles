@@ -99,6 +99,7 @@ export default function LandingPage() {
         <React.Fragment>
             <Box sx={{ display: "flex" }}>
                 <CssBaseline />
+
                 <AppBar position="fixed" open={open}>
                     <Toolbar>
                         <IconButton
@@ -209,6 +210,7 @@ export default function LandingPage() {
                 <ReferenceDataEditor
                     mode={editorModeRef.current}
                     onClose={() => setShowReferenceDataEditor(false)}
+                    editGridRows={gridRef.current.api.getSelectedRows()}
                 />
             )}
         </React.Fragment>

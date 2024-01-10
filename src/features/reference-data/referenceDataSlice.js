@@ -34,6 +34,9 @@ export const referenceDataSlice = apiSlice.injectEndpoints({
         getMatchKeys: builder.query({
             query: () => "/match_keys",
         }),
+        getMatchKeyCombinations: builder.query({
+            query: () => "/match_key_combinations",
+        }),
     }),
 });
 
@@ -42,4 +45,5 @@ export const {
     useGetReferenceDataQuery,
     useUpdateReferenceDataMutation,
     useGetMatchKeysQuery,
+    useLazyGetMatchKeyCombinationsQuery,
 } = referenceDataSlice;
