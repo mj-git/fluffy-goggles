@@ -7,7 +7,7 @@ import {
 } from "./referenceDataSlice";
 import { Button } from "@mui/material";
 
-const ReferenceDataGrid = ({ gridRef }) => {
+const ReferenceDataGrid = ({ gridRef, onRowSelected }) => {
     const { data: columns = [], isLoading: isLoadingColumnsData } =
         useGetReferenceDataColumnsQuery();
     const { data: rows = [], isLoading: isLoadingRowsData } =
@@ -84,6 +84,7 @@ const ReferenceDataGrid = ({ gridRef }) => {
                 getRowId={getRowId}
                 rowData={rowData}
                 rowSelection="multiple"
+                onRowSelected={onRowSelected}
                 rowHeight={40}
                 // getRowStyle={getRowStyle}
                 // isRowSelectable={isRowSelectable}

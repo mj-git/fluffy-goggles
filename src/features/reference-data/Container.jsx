@@ -27,8 +27,17 @@ import CreateMatchKeysModal from "./CreateMatchKeysModal";
 import ReferenceDataEditor from "./ReferenceDataEditor";
 import { REFERENCE_DATA_EDITOR_MODE } from "../../utils/constants";
 import { useRef } from "react";
+import { Link } from "react-router-dom";
+
+import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
 
 const drawerWidth = 240;
+
+const MenuItems = [
+    { name: "Reference Data", url: "/" },
+    { name: "Requests", url: "/requests" },
+];
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
     ({ theme, open }) => ({
@@ -78,7 +87,8 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export default function LandingPage() {
     const gridRef = React.useRef();
     const theme = useTheme();
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = React.useState(true);
+    const [editEnabled, setEditEnabled] = useState(false);
     const editorModeRef = useRef(REFERENCE_DATA_EDITOR_MODE.create);
 
     const [showCreateMatchKeysModal, setShowCreateMatchKeysModal] =
@@ -145,59 +155,80 @@ export default function LandingPage() {
                     </DrawerHeader>
                     <Divider />
                     <List>
-                        {["Reference Data", "Requests"].map((text, index) => (
-                            <ListItem key={text} disablePadding>
-                                <ListItemButton>
-                                    <ListItemIcon>
-                                        {index % 2 === 0 ? (
-                                            <InboxIcon />
-                                        ) : (
-                                            <MailIcon />
-                                        )}
-                                    </ListItemIcon>
-                                    <ListItemText primary={text} />
-                                </ListItemButton>
+                        {MenuItems.map((menuItem, index) => (
+                            <ListItem key={menuItem.name} disablePadding>
+                                <Link to={menuItem.url} className="flex-grow">
+                                    <ListItemButton>
+                                        <ListItemIcon>
+                                            {index % 2 === 0 ? (
+                                                <InboxIcon />
+                                            ) : (
+                                                <MailIcon />
+                                            )}
+                                        </ListItemIcon>
+                                        <ListItemText primary={menuItem.name} />
+                                    </ListItemButton>
+                                </Link>
                             </ListItem>
                         ))}
                     </List>
                 </Drawer>
                 <Main open={open}>
                     <DrawerHeader />
-
-                    <Button
-                        variant="contained"
-                        onClick={() => {
-                            // console.log(gridRef.current.api.getSelectedRows());
-                            setShowCreateMatchKeysModal(true);
-                        }}
-                    >
-                        Define
-                    </Button>
-                    <Button
-                        variant="contained"
-                        onClick={() => {
-                            // console.log(gridRef.current.api.getSelectedRows());
-                            // setShowCreateMatchKeysModal(true);
-                            editorModeRef.current =
-                                REFERENCE_DATA_EDITOR_MODE.create;
-                            setShowReferenceDataEditor(true);
-                        }}
-                    >
-                        Add
-                    </Button>
-                    <Button
-                        variant="contained"
-                        onClick={() => {
-                            // console.log(gridRef.current.api.getSelectedRows());
-                            editorModeRef.current =
-                                REFERENCE_DATA_EDITOR_MODE.edit;
-                            setShowReferenceDataEditor(true);
-                        }}
-                    >
-                        Edit
-                    </Button>
+                    <div className="mt-5 mb-5 flex">
+                        <Button
+                            variant="contained"
+                            onClick={() => {
+                                // console.log(gridRef.current.api.getSelectedRows());
+                                setShowCreateMatchKeysModal(true);
+                            }}
+                        >
+                            Create Match Keys
+                        </Button>
+                        <div className="ml-auto">
+                            <Button
+                                variant="contained"
+                                style={{ marginInline: "10px" }}
+                                startIcon={<AddIcon />}
+                                onClick={() => {
+                                    // console.log(gridRef.current.api.getSelectedRows());
+                                    // setShowCreateMatchKeysModal(true);
+                                    editorModeRef.current =
+                                        REFERENCE_DATA_EDITOR_MODE.create;
+                                    setShowReferenceDataEditor(true);
+                                }}
+                            >
+                                Add
+                            </Button>
+                            <Button
+                                variant="contained"
+                                startIcon={<EditIcon />}
+                                disabled={!editEnabled}
+                                onClick={() => {
+                                    // console.log(gridRef.current.api.getSelectedRows());
+                                    editorModeRef.current =
+                                        REFERENCE_DATA_EDITOR_MODE.edit;
+                                    setShowReferenceDataEditor(true);
+                                }}
+                            >
+                                Edit
+                            </Button>
+                        </div>
+                    </div>
                     <div className="grid-container">
-                        <ReferenceDataGrid gridRef={gridRef} />
+                        <ReferenceDataGrid
+                            gridRef={gridRef}
+                            onRowSelected={() => {
+                                const hasSelectedRows =
+                                    gridRef.current.api.getSelectedRows()
+                                        .length > 0;
+                                if (!editEnabled && hasSelectedRows) {
+                                    setEditEnabled(true);
+                                } else if (editEnabled && !hasSelectedRows) {
+                                    setEditEnabled(false);
+                                }
+                            }}
+                        />
                     </div>
                 </Main>
             </Box>
