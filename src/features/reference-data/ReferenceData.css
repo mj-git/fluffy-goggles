@@ -5,20 +5,18 @@
 .ag-theme-balham .custom-header-row {
     background-color: #ff6200;
     color: #fff;
-    &:hover {
-        background-color: #fff;
-        color: #ff6200;
-    }
 }
 
-.nav-bar {
-    svg {
-        color: #ff6200;
-    }
+.ag-theme-balham .custom-header-row:hover {
+    background-color: #fff;
+    color: #ff6200;
 }
 
-.nav-bar.active {
-    svg {
-        color: #fff;
-    }
+.nav-bar svg {
+    color: #ff6200;
+}
+
+
+.nav-bar.active svg {
+    color: #fff;
 }

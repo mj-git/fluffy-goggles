@@ -17,24 +17,14 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 
-import { Alert, Button, Snackbar } from "@mui/material";
-
 import "./ReferenceData.css";
-import { useState } from "react";
-import CreateMatchKeysModal from "./CreateMatchKeysModal";
-import ReferenceDataEditor from "./ReferenceDataEditor";
-import { REFERENCE_DATA_EDITOR_MODE } from "../../utils/constants";
-import { useRef } from "react";
-import { Link, NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import ConstructionIcon from "@mui/icons-material/Construction";
 import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
 import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
-import CloseIcon from "@mui/icons-material/Close";
 
 import { useDispatch, useSelector } from "react-redux";
 import { clearError } from "../../redux/error/errorSlice";

@@ -1,4 +1,4 @@
-import { Alert, Snackbar, duration } from "@mui/material";
+import { Alert, Snackbar } from "@mui/material";
 import React from "react";
 
 const Toast = ({ onClose, message, messageType }) => {
