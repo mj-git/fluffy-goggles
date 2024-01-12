@@ -19,6 +19,8 @@ const StyledDialog = styled(Dialog)(({ theme }) => ({
     },
     "& .MuiDialogTitle-root": {
         padding: "unset",
+        background: theme.palette.primary.main,
+        color: "#fff",
     },
     "& .MuiPaper-elevation": {
         maxHeight: "unset",
@@ -50,7 +52,7 @@ export default function DialogBox({
                     position: "absolute",
                     right: 8,
                     top: 8,
-                    color: (theme) => theme.palette.grey[500],
+                    color: (theme) => theme.palette.common.white,
                 }}
             >
                 <CloseIcon />

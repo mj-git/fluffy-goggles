@@ -13,6 +13,9 @@ const ReferenceDataGrid = ({ gridRef, onRowSelected }) => {
     const { data: rows = [], isLoading: isLoadingRowsData } =
         useGetReferenceDataQuery();
     const [updateReferenceData] = useUpdateReferenceDataMutation();
+    const defaultColDef = {
+        headerClass: "custom-header-row",
+    };
     const colDefs = useMemo(() => {
         if (columns.length) {
             return columns.map((column, index) => ({
@@ -79,7 +82,8 @@ const ReferenceDataGrid = ({ gridRef, onRowSelected }) => {
     return (
         <div style={{ height: "100%" }}>
             <AgGridReact
-                className="ag-theme-balham"
+                defaultColDef={defaultColDef}
+                className="ag-theme-balham ag-theme-accounting"
                 ref={gridRef}
                 getRowId={getRowId}
                 rowData={rowData}

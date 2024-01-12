@@ -16,10 +16,8 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import ReferenceDataGrid from "./ReferenceDataGrid";
-import { Button } from "@mui/material";
+
+import { Alert, Button, Snackbar } from "@mui/material";
 
 import "./ReferenceData.css";
 import { useState } from "react";
@@ -27,16 +25,50 @@ import CreateMatchKeysModal from "./CreateMatchKeysModal";
 import ReferenceDataEditor from "./ReferenceDataEditor";
 import { REFERENCE_DATA_EDITOR_MODE } from "../../utils/constants";
 import { useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
 
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import ConstructionIcon from "@mui/icons-material/Construction";
+import SettingsSuggestIcon from "@mui/icons-material/SettingsSuggest";
+import QuestionAnswerIcon from "@mui/icons-material/QuestionAnswer";
+import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
+import CloseIcon from "@mui/icons-material/Close";
+
+import { useDispatch, useSelector } from "react-redux";
+import { clearError } from "../../redux/error/errorSlice";
+import { useCallback } from "react";
+import Toast from "../../components/Toast";
 
 const drawerWidth = 240;
 
 const MenuItems = [
-    { name: "Reference Data", url: "/" },
-    { name: "Requests", url: "/requests" },
+    {
+        name: "Reference Data",
+        url: "/accounting-configurations",
+        iconComponent: <SettingsSuggestIcon />,
+    },
+    {
+        name: "Requests",
+        url: "/requests",
+        iconComponent: <QuestionAnswerIcon />,
+    },
+    {
+        name: "Dashboards",
+        url: "/dashboards",
+        iconComponent: <DashboardIcon />,
+    },
+    {
+        name: "Developer Tools",
+        url: "/developer-tools",
+        iconComponent: <ConstructionIcon />,
+    },
+    {
+        name: "Audit",
+        url: "/audit",
+        iconComponent: <ReceiptLongIcon />,
+    },
 ];
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -84,18 +116,11 @@ const DrawerHeader = styled("div")(({ theme }) => ({
     justifyContent: "flex-end",
 }));
 
-export default function LandingPage() {
-    const gridRef = React.useRef();
+function AppContainer() {
+    const apiError = useSelector((state) => state.error.value);
+    const dispatch = useDispatch();
     const theme = useTheme();
     const [open, setOpen] = React.useState(true);
-    const [editEnabled, setEditEnabled] = useState(false);
-    const editorModeRef = useRef(REFERENCE_DATA_EDITOR_MODE.create);
-
-    const [showCreateMatchKeysModal, setShowCreateMatchKeysModal] =
-        useState(false);
-
-    const [showReferenceDataEditor, setShowReferenceDataEditor] =
-        useState(false);
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -104,6 +129,11 @@ export default function LandingPage() {
     const handleDrawerClose = () => {
         setOpen(false);
     };
+
+    const clearErrorMessage = useCallback(
+        () => dispatch(clearError()),
+        [dispatch]
+    );
 
     return (
         <React.Fragment>
@@ -121,14 +151,31 @@ export default function LandingPage() {
                         >
                             <MenuIcon />
                         </IconButton>
-                        <Typography
-                            variant="h6"
-                            noWrap
-                            component="div"
-                            marginLeft="auto"
-                        >
-                            Welcome User
-                        </Typography>
+                        <div className="ml-auto">
+                            <Typography
+                                variant="h6"
+                                textAlign="right"
+                                noWrap
+                                component="div"
+                            >
+                                Welcome Meghaa
+                            </Typography>
+                            <Typography
+                                textAlign="right"
+                                variant="body2"
+                                noWrap
+                                component="div"
+                            >
+                                You're Editor
+                            </Typography>
+                        </div>
+                        <img
+                            src="ING.png"
+                            width={70}
+                            height={70}
+                            alt="logo"
+                            loading="lazy"
+                        />
                     </Toolbar>
                 </AppBar>
                 <Drawer
@@ -157,93 +204,45 @@ export default function LandingPage() {
                     <List>
                         {MenuItems.map((menuItem, index) => (
                             <ListItem key={menuItem.name} disablePadding>
-                                <Link to={menuItem.url} className="flex-grow">
+                                <NavLink
+                                    style={({ isActive }) =>
+                                        isActive
+                                            ? {
+                                                  background: "#ff6200",
+                                                  color: "#fff",
+                                              }
+                                            : {
+                                                  color: "#ff6200",
+                                              }
+                                    }
+                                    to={menuItem.url}
+                                    className="flex-grow hov nav-bar"
+                                >
                                     <ListItemButton>
                                         <ListItemIcon>
-                                            {index % 2 === 0 ? (
-                                                <InboxIcon />
-                                            ) : (
-                                                <MailIcon />
-                                            )}
+                                            {menuItem.iconComponent}
                                         </ListItemIcon>
                                         <ListItemText primary={menuItem.name} />
                                     </ListItemButton>
-                                </Link>
+                                </NavLink>
                             </ListItem>
                         ))}
                     </List>
                 </Drawer>
                 <Main open={open}>
                     <DrawerHeader />
-                    <div className="mt-5 mb-5 flex">
-                        <Button
-                            variant="contained"
-                            onClick={() => {
-                                // console.log(gridRef.current.api.getSelectedRows());
-                                setShowCreateMatchKeysModal(true);
-                            }}
-                        >
-                            Create Match Keys
-                        </Button>
-                        <div className="ml-auto">
-                            <Button
-                                variant="contained"
-                                style={{ marginInline: "10px" }}
-                                startIcon={<AddIcon />}
-                                onClick={() => {
-                                    // console.log(gridRef.current.api.getSelectedRows());
-                                    // setShowCreateMatchKeysModal(true);
-                                    editorModeRef.current =
-                                        REFERENCE_DATA_EDITOR_MODE.create;
-                                    setShowReferenceDataEditor(true);
-                                }}
-                            >
-                                Add
-                            </Button>
-                            <Button
-                                variant="contained"
-                                startIcon={<EditIcon />}
-                                disabled={!editEnabled}
-                                onClick={() => {
-                                    // console.log(gridRef.current.api.getSelectedRows());
-                                    editorModeRef.current =
-                                        REFERENCE_DATA_EDITOR_MODE.edit;
-                                    setShowReferenceDataEditor(true);
-                                }}
-                            >
-                                Edit
-                            </Button>
-                        </div>
-                    </div>
-                    <div className="grid-container">
-                        <ReferenceDataGrid
-                            gridRef={gridRef}
-                            onRowSelected={() => {
-                                const hasSelectedRows =
-                                    gridRef.current.api.getSelectedRows()
-                                        .length > 0;
-                                if (!editEnabled && hasSelectedRows) {
-                                    setEditEnabled(true);
-                                } else if (editEnabled && !hasSelectedRows) {
-                                    setEditEnabled(false);
-                                }
-                            }}
-                        />
-                    </div>
+                    <Outlet />
                 </Main>
             </Box>
-            {showCreateMatchKeysModal && (
-                <CreateMatchKeysModal
-                    onClose={() => setShowCreateMatchKeysModal(false)}
-                />
-            )}
-            {showReferenceDataEditor && (
-                <ReferenceDataEditor
-                    mode={editorModeRef.current}
-                    onClose={() => setShowReferenceDataEditor(false)}
-                    editGridRows={gridRef.current.api.getSelectedRows()}
+            {apiError && (
+                <Toast
+                    message={apiError}
+                    messageType="error"
+                    onClose={clearErrorMessage}
                 />
             )}
         </React.Fragment>
     );
 }
+
+export default AppContainer;

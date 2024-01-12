@@ -1,3 +1,24 @@
 .grid-container {
     height: 500px;
 }
+
+.ag-theme-balham .custom-header-row {
+    background-color: #ff6200;
+    color: #fff;
+    &:hover {
+        background-color: #fff;
+        color: #ff6200;
+    }
+}
+
+.nav-bar {
+    svg {
+        color: #ff6200;
+    }
+}
+
+.nav-bar.active {
+    svg {
+        color: #fff;
+    }
+}
