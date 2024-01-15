@@ -84,7 +84,13 @@ const MatchKeyField = ({
     );
 };
 
-const CreateLayout = ({ onMatchKeySelection, step, combinationsData }) => {
+const CreateLayout = ({
+    onMatchKeySelection,
+    step,
+    combinationsData,
+    selectedCombinations,
+    onSelectedCombinationsChange,
+}) => {
     const { data: allMatchKeysData, isLoading: matchKeysLoading } =
         useGetMatchKeysQuery();
     const { data: columns = [] } = useGetReferenceDataColumnsQuery();
@@ -93,10 +99,7 @@ const CreateLayout = ({ onMatchKeySelection, step, combinationsData }) => {
     const rowData = useMemo(() => {
         if (!combinationsData) return [];
         if (combinationsData.length) {
-            const allowedRows = combinationsData.filter(
-                (combination) => combination.allowed
-            );
-            return allowedRows.map((row, index) => ({
+            return combinationsData.map((row, index) => ({
                 ...row.columnToValueMap,
                 id: index + 1,
             }));
@@ -117,6 +120,11 @@ const CreateLayout = ({ onMatchKeySelection, step, combinationsData }) => {
     const getRowId = useCallback((row) => {
         return row.data.id;
     }, []);
+
+    const onCombinationSelectionChanged = (event) => {
+        const selectedRows = event.api.getSelectedRows();
+        onSelectedCombinationsChange(selectedRows);
+    };
 
     if (matchKeysLoading) {
         return null;
@@ -162,6 +170,22 @@ const CreateLayout = ({ onMatchKeySelection, step, combinationsData }) => {
                             rowHeight={40}
                             // getRowStyle={getRowStyle}
                             // isRowSelectable={isRowSelectable}
+                            onFirstDataRendered={(params) => {
+                                const presetSelectedRows =
+                                    selectedCombinations.map(
+                                        (combination) => combination.id
+                                    );
+                                params.api.forEachNode((node) => {
+                                    if (
+                                        presetSelectedRows.includes(
+                                            node.data.id
+                                        )
+                                    ) {
+                                        node.setSelected(true);
+                                    }
+                                });
+                            }}
+                            onSelectionChanged={onCombinationSelectionChanged}
                             columnDefs={colDefs}
                             rowMultiSelectWithClick
                         />
@@ -171,7 +195,9 @@ const CreateLayout = ({ onMatchKeySelection, step, combinationsData }) => {
                 return (
                     <div className="h-full flex flex-col">
                         <div className="flex-grow-0 mt-5 mb-5">
-                            <TextField label="Number of output" />
+                            <Typography variant="h6">
+                                Select output records
+                            </Typography>
                         </div>
                         <AgGridReact
                             className="ag-theme-balham"
@@ -313,21 +339,24 @@ const EditorContentWrapper = memo(({ mode, onClose, editGridRows }) => {
     const [isValid, setIsValid] = useState(false);
     const [step, setStep] = useState(STEPS.SELECT_MATCH_KEYS);
     const selectedMatchKeysRef = useRef({});
+    const selectedCombinationsRef = useRef([]);
 
     const onMatchKeySelection = useCallback(
         (matchKey, selectedValues) => {
-            selectedMatchKeysRef.current[matchKey] = selectedValues.length;
+            selectedMatchKeysRef.current[matchKey] = selectedValues;
 
-            if (!selectedMatchKeysRef.current[matchKey]) {
+            if (!selectedMatchKeysRef.current[matchKey].length) {
                 delete selectedMatchKeysRef.current[matchKey];
             }
 
             const allSelections = Object.values(selectedMatchKeysRef.current);
 
             const result = allSelections.length
-                ? allSelections.reduce((prev, next) => {
-                      return prev * next;
-                  }, 1)
+                ? allSelections
+                      .map((selection) => selection.length)
+                      .reduce((prev, next) => {
+                          return prev * next;
+                      }, 1)
                 : 0;
 
             if (isValid && (result > 30 || result === 0)) {
@@ -339,12 +368,17 @@ const EditorContentWrapper = memo(({ mode, onClose, editGridRows }) => {
         [isValid]
     );
 
+    const onSelectedCombinationsChange = (newCombinations) =>
+        (selectedCombinationsRef.current = newCombinations);
+
     const renderCreateWorkflow = () => {
         return (
             <CreateLayout
                 onMatchKeySelection={onMatchKeySelection}
                 step={step}
                 combinationsData={combinationsData}
+                selectedCombinations={selectedCombinationsRef.current}
+                onSelectedCombinationsChange={onSelectedCombinationsChange}
             />
         );
     };

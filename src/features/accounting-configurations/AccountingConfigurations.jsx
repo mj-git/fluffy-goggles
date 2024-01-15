@@ -12,6 +12,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import ReferenceDataGrid from "../reference-data/ReferenceDataGrid";
 import CreateMatchKeysModal from "../reference-data/CreateMatchKeysModal";
 import ReferenceDataEditor from "../reference-data/ReferenceDataEditor";
+import Toast from "../../components/Toast";
 
 const AccountingConfigurations = () => {
     // Refs
@@ -24,6 +25,7 @@ const AccountingConfigurations = () => {
     const [showReferenceDataEditor, setShowReferenceDataEditor] =
         useState(false);
     const [editEnabled, setEditEnabled] = useState(false);
+    const [showToastMessage, setShowToastMessage] = useState(false);
 
     return (
         <React.Fragment>
@@ -83,7 +85,12 @@ const AccountingConfigurations = () => {
             </div>
             {showCreateMatchKeysModal && (
                 <CreateMatchKeysModal
-                    onClose={() => setShowCreateMatchKeysModal(false)}
+                    onClose={(showToast) => {
+                        if (showToast) {
+                            setShowToastMessage(true);
+                        }
+                        setShowCreateMatchKeysModal(false);
+                    }}
                 />
             )}
             {showReferenceDataEditor && (
@@ -93,6 +100,7 @@ const AccountingConfigurations = () => {
                     editGridRows={gridRef.current.api.getSelectedRows()}
                 />
             )}
+            {showToastMessage && <Toast message="Data saved successfully!" />}
         </React.Fragment>
     );
 };

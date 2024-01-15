@@ -14,6 +14,7 @@ import {
 import { useGetMatchKeysQuery } from "./referenceDataSlice";
 import { useRef } from "react";
 import { useCallback } from "react";
+import Toast from "../../components/Toast";
 
 const StyledTextField = styled(TextField)(() => ({
     "& .MuiOutlinedInput-input ": {
@@ -94,6 +95,7 @@ const MatchKey = ({ data: matchKey, onMatchKeyChange }) => {
 const CreateMatchKeysModal = ({ onClose }) => {
     const { data: allMatchKeys, isLoading } = useGetMatchKeysQuery();
     const matchKeysMapRef = useRef({});
+    const [showMsg, setShowMsg] = useState(false);
     const onMatchKeyChange = useCallback((matchKey, newMatchKeyValues) => {
         matchKeysMapRef.current[matchKey] = newMatchKeyValues;
         console.log(matchKeysMapRef.current);
@@ -112,11 +114,16 @@ const CreateMatchKeysModal = ({ onClose }) => {
         );
     };
 
+    const onSave = () => {
+        setShowMsg(true);
+        onClose(true);
+    };
+
     const renderActionButtons = () => {
         return (
             <React.Fragment>
                 <Button onClick={onClose}>Cancel</Button>
-                <Button>Save</Button>
+                <Button onClick={onSave}>Save</Button>
             </React.Fragment>
         );
     };
@@ -126,16 +133,19 @@ const CreateMatchKeysModal = ({ onClose }) => {
     }
 
     return (
-        <DialogBox
-            renderTitle={
-                <Box className={styles.title}>
-                    <Typography variant="h6">Create Match Keys</Typography>
-                </Box>
-            }
-            renderContent={renderModalContent()}
-            renderFooter={renderActionButtons()}
-            onClose={onClose}
-        />
+        <>
+            <DialogBox
+                renderTitle={
+                    <Box className={styles.title}>
+                        <Typography variant="h6">Create Match Keys</Typography>
+                    </Box>
+                }
+                renderContent={renderModalContent()}
+                renderFooter={renderActionButtons()}
+                onClose={onClose}
+            />
+            {showMsg && <Toast message="Successfulll" />}
+        </>
     );
 };
 
